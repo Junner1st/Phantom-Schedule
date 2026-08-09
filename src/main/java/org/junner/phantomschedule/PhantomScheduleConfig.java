@@ -2,7 +2,6 @@ package org.junner.phantomschedule;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
@@ -65,16 +64,16 @@ public final class PhantomScheduleConfig {
 			Files.createDirectories(parent);
 		}
 
-		Properties defaults = new Properties();
-		defaults.setProperty("enabled", Boolean.toString(DEFAULT_ENABLED));
-		defaults.setProperty("start", DEFAULT_START.toString());
-		defaults.setProperty("end", DEFAULT_END.toString());
-		defaults.setProperty("zone", DEFAULT_ZONE);
-		defaults.setProperty("holidays", DEFAULT_HOLIDAYS);
+		String defaults = """
+				# Phantom Schedule config. Times are real-world local times. Holidays allow phantoms all day.
+				enabled=%s
+				zone=%s
+				start=%s
+				end=%s
+				holidays=%s
+				""".formatted(DEFAULT_ENABLED, DEFAULT_ZONE, DEFAULT_START, DEFAULT_END, DEFAULT_HOLIDAYS);
 
-		try (Writer writer = Files.newBufferedWriter(path)) {
-			defaults.store(writer, "Phantom Schedule config. Times are real-world local times. Holidays allow phantoms all day.");
-		}
+		Files.writeString(path, defaults);
 	}
 
 	private Schedule parse(Properties properties) {
