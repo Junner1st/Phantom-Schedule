@@ -1,0 +1,27 @@
+{
+	"schemaVersion": 1,
+	"id": "phantom-schedule",
+	"version": "${version}",
+	"name": "Phantom Schedule",
+	"description": "I still want to acheive all advencement on my SMP... But I don't want ann phantoms... What about allow phantoms spawning at REAL NIGHT or on HOLIDAY?",
+	"authors": [
+		"junner"
+	],
+	"license": "MIT",
+	"icon": "assets/icon/icon.png",
+	"environment": "server",
+	"entrypoints": {
+		"main": [
+			"org.junner.phantomschedule.PhantomScheduleMod"
+		]
+	},
+	"mixins": [
+		"phantom-schedule.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

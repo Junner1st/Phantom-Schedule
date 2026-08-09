@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "org.junner.phantomschedule.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"PhantomSpawnerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}
