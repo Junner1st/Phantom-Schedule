@@ -3,7 +3,9 @@
 	"package": "org.junner.phantomschedule.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"mixins": [
-		"PhantomSpawnerMixin"
+		"PhantomSpawnerMixin",
+		"ServerChunkCacheMixin",
+		"ServerLevelAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

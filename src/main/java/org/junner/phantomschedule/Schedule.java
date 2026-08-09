@@ -7,12 +7,19 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Set;
 
-public record Schedule(boolean enabled, LocalTime start, LocalTime end, ZoneId zone, Set<MonthDay> annualHolidays, Set<LocalDate> datedHolidays) {
+public record Schedule(
+		boolean enableMod,
+		boolean ignoreGamerule,
+		boolean ignoreGameruleSpawnMobs,
+		boolean ignoreGameruleSpawnMonsters,
+		boolean ignoreGameruleSpawnPhantoms,
+		LocalTime start,
+		LocalTime end,
+		ZoneId zone,
+		Set<MonthDay> annualHolidays,
+		Set<LocalDate> datedHolidays
+) {
 	public boolean allowsNow() {
-		if (!enabled) {
-			return true;
-		}
-
 		ZonedDateTime now = ZonedDateTime.now(effectiveZone());
 		if (isHoliday(now.toLocalDate())) {
 			return true;
@@ -39,5 +46,17 @@ public record Schedule(boolean enabled, LocalTime start, LocalTime end, ZoneId z
 
 	private ZoneId effectiveZone() {
 		return zone == null ? ZoneId.systemDefault() : zone;
+	}
+
+	public boolean ignoresSpawnMobsGamerule() {
+		return ignoreGamerule && ignoreGameruleSpawnMobs;
+	}
+
+	public boolean ignoresSpawnMonstersGamerule() {
+		return ignoreGamerule && ignoreGameruleSpawnMonsters;
+	}
+
+	public boolean ignoresSpawnPhantomsGamerule() {
+		return ignoreGamerule && ignoreGameruleSpawnPhantoms;
 	}
 }

@@ -15,14 +15,29 @@ import java.util.Properties;
 import java.util.Set;
 
 public final class PhantomScheduleConfig {
-	private static final boolean DEFAULT_ENABLED = true;
+	private static final boolean DEFAULT_ENABLE_MOD = true;
+	private static final boolean DEFAULT_IGNORE_GAMERULE = true;
+	private static final boolean DEFAULT_IGNORE_GAMERULE_SPAWN_MOBS = false;
+	private static final boolean DEFAULT_IGNORE_GAMERULE_SPAWN_MONSTERS = false;
+	private static final boolean DEFAULT_IGNORE_GAMERULE_SPAWN_PHANTOMS = true;
 	private static final LocalTime DEFAULT_START = LocalTime.of(19, 0);
 	private static final LocalTime DEFAULT_END = LocalTime.of(6, 0);
 	private static final String DEFAULT_ZONE = "system";
 	private static final String DEFAULT_HOLIDAYS = "";
 
 	private final Path path;
-	private volatile Schedule schedule = new Schedule(DEFAULT_ENABLED, DEFAULT_START, DEFAULT_END, null, Set.of(), Set.of());
+	private volatile Schedule schedule = new Schedule(
+			DEFAULT_ENABLE_MOD,
+			DEFAULT_IGNORE_GAMERULE,
+			DEFAULT_IGNORE_GAMERULE_SPAWN_MOBS,
+			DEFAULT_IGNORE_GAMERULE_SPAWN_MONSTERS,
+			DEFAULT_IGNORE_GAMERULE_SPAWN_PHANTOMS,
+			DEFAULT_START,
+			DEFAULT_END,
+			null,
+			Set.of(),
+			Set.of()
+	);
 	private FileTime lastModified;
 
 	public PhantomScheduleConfig(Path path) {
@@ -66,24 +81,57 @@ public final class PhantomScheduleConfig {
 
 		String defaults = """
 				# Phantom Schedule config. Times are real-world local times. Holidays allow phantoms all day.
-				enabled=%s
+				enable_mod=%s
+				ignore_gamerule=%s
+				ignore_gamerule_spawn_mobs=%s
+				ignore_gamerule_spawn_monsters=%s
+				ignore_gamerule_spawn_phantoms=%s
 				zone=%s
 				start=%s
 				end=%s
 				holidays=%s
-				""".formatted(DEFAULT_ENABLED, DEFAULT_ZONE, DEFAULT_START, DEFAULT_END, DEFAULT_HOLIDAYS);
+				""".formatted(
+				DEFAULT_ENABLE_MOD,
+				DEFAULT_IGNORE_GAMERULE,
+				DEFAULT_IGNORE_GAMERULE_SPAWN_MOBS,
+				DEFAULT_IGNORE_GAMERULE_SPAWN_MONSTERS,
+				DEFAULT_IGNORE_GAMERULE_SPAWN_PHANTOMS,
+				DEFAULT_ZONE,
+				DEFAULT_START,
+				DEFAULT_END,
+				DEFAULT_HOLIDAYS
+		);
 
 		Files.writeString(path, defaults);
 	}
 
 	private Schedule parse(Properties properties) {
-		boolean enabled = Boolean.parseBoolean(properties.getProperty("enabled", Boolean.toString(DEFAULT_ENABLED)).trim());
+		boolean enableMod = parseBoolean(properties, "enable_mod", properties.getProperty("enabled", Boolean.toString(DEFAULT_ENABLE_MOD)));
+		boolean ignoreGamerule = parseBoolean(properties, "ignore_gamerule", Boolean.toString(DEFAULT_IGNORE_GAMERULE));
+		boolean ignoreGameruleSpawnMobs = parseBoolean(properties, "ignore_gamerule_spawn_mobs", Boolean.toString(DEFAULT_IGNORE_GAMERULE_SPAWN_MOBS));
+		boolean ignoreGameruleSpawnMonsters = parseBoolean(properties, "ignore_gamerule_spawn_monsters", Boolean.toString(DEFAULT_IGNORE_GAMERULE_SPAWN_MONSTERS));
+		boolean ignoreGameruleSpawnPhantoms = parseBoolean(properties, "ignore_gamerule_spawn_phantoms", Boolean.toString(DEFAULT_IGNORE_GAMERULE_SPAWN_PHANTOMS));
 		LocalTime start = parseTime(properties.getProperty("start", DEFAULT_START.toString()), "start");
 		LocalTime end = parseTime(properties.getProperty("end", DEFAULT_END.toString()), "end");
 		ZoneId zone = parseZone(properties.getProperty("zone", DEFAULT_ZONE));
 		HolidayConfig holidays = parseHolidays(properties.getProperty("holidays", DEFAULT_HOLIDAYS));
 
-		return new Schedule(enabled, start, end, zone, holidays.annual(), holidays.dated());
+		return new Schedule(
+				enableMod,
+				ignoreGamerule,
+				ignoreGameruleSpawnMobs,
+				ignoreGameruleSpawnMonsters,
+				ignoreGameruleSpawnPhantoms,
+				start,
+				end,
+				zone,
+				holidays.annual(),
+				holidays.dated()
+		);
+	}
+
+	private boolean parseBoolean(Properties properties, String key, String defaultValue) {
+		return Boolean.parseBoolean(properties.getProperty(key, defaultValue).trim());
 	}
 
 	private LocalTime parseTime(String value, String name) {

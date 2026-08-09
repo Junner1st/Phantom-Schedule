@@ -7,10 +7,14 @@ I still want to achieve all advancements on my SMP, but I do not want phantoms e
 The mod creates `config/phantom-schedule.properties` on first server start:
 
 ```properties
-enabled=true
+enable_mod=true
+ignore_gamerule=true
+ignore_gamerule_spawn_mobs=false
+ignore_gamerule_spawn_monsters=false
+ignore_gamerule_spawn_phantoms=true
+zone=system
 start=19:00
 end=06:00
-zone=system
 holidays=
 ```
 

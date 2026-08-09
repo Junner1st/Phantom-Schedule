@@ -18,12 +18,42 @@ public final class PhantomScheduleMod implements ModInitializer {
 	}
 
 	public static boolean canPhantomSpawnNow() {
+		Schedule schedule = currentSchedule();
+		return schedule == null || !schedule.enableMod() || schedule.allowsNow();
+	}
+
+	public static boolean shouldAllowPhantomSpawning() {
+		Schedule schedule = currentSchedule();
+		return schedule != null && schedule.enableMod() && schedule.allowsNow();
+	}
+
+	public static boolean shouldDenyPhantomSpawning() {
+		Schedule schedule = currentSchedule();
+		return schedule != null && schedule.enableMod() && !schedule.allowsNow();
+	}
+
+	public static boolean shouldIgnoreSpawnMobsGamerule() {
+		Schedule schedule = currentSchedule();
+		return schedule != null && schedule.enableMod() && schedule.ignoresSpawnMobsGamerule();
+	}
+
+	public static boolean shouldIgnoreSpawnMonstersGamerule() {
+		Schedule schedule = currentSchedule();
+		return schedule != null && schedule.enableMod() && schedule.ignoresSpawnMonstersGamerule();
+	}
+
+	public static boolean shouldIgnoreSpawnPhantomsGamerule() {
+		Schedule schedule = currentSchedule();
+		return schedule != null && schedule.enableMod() && schedule.ignoresSpawnPhantomsGamerule();
+	}
+
+	private static Schedule currentSchedule() {
 		PhantomScheduleConfig activeConfig = config;
 		if (activeConfig == null) {
-			return true;
+			return null;
 		}
 
 		activeConfig.reloadIfChanged();
-		return activeConfig.currentSchedule().allowsNow();
+		return activeConfig.currentSchedule();
 	}
 }
