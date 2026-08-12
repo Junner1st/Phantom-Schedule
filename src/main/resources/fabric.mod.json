@@ -19,9 +19,9 @@
 		"phantom-schedule.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.19.3",
-		"minecraft": "26.2",
-		"java": ">=25",
+		"fabricloader": "${loaderdep}",
+		"minecraft": "${mcdep}",
+		"java": ">=${java}",
 		"fabric-api": "*"
 	}
 }
